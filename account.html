@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HRealm — Account</title>
+     <link rel="icon" type="image/png" href="https://img.freepik.com/premium-vector/hr-monogram-logo-vector_724449-1195.jpg">
+    <style>
+        html { background-color: #281612 !important; }
+        body { margin: 0; }
+        #page-loader {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: #281612 !important; z-index: 100000;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: opacity 0.3s ease;
+        }
+        .museum-container { position: relative; width: 160px; height: 160px; display: flex; justify-content: center; align-items: center; }
+        #loader-icon { font-size: 80px; color: #ffa406; z-index: 2; }
+        .shimmer-ring {
+            position: absolute; width: 100%; height: 100%;
+            border: 4px solid rgba(255,164,6,0.1); border-top: 4px solid #ffa406;
+            border-radius: 50%; animation: spin 0.8s linear infinite;
+        }
+        #loader-desc { margin-top: 30px; color: #ffa406; font-family: serif; font-size: 20px; font-style: italic; letter-spacing: 2px; text-align: center; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .hidden-content { opacity: 0; }
+        .fade-in { opacity: 1; transition: opacity 0.4s ease; }
+    </style>
+    <link rel="stylesheet" href="./account.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="hidden-content">
+
+<div id="page-loader">
+    <div class="museum-container">
+        <div class="shimmer-ring"></div>
+        <div id="loader-icon"><i class="fa-solid fa-user-gear"></i></div>
+    </div>
+    <div id="loader-desc">Account Loading</div>
+</div>
+
+<nav class="nav-container">
+    <a href="home.html" class="nav-brand">
+        <img src="https://placehold.co/200x70/1a0f0d/ffa406?text=HRealm&font=serif" alt="HRealm Logo">
+    </a>
+
+    <div class="nav-links">
+                <a href="home.html" class="hey">Գլխավոր</a>
+                <a href="history.html" class="hey">Պատմություն</a>
+                <a href="pictures.html" class="hey">Նկարներ</a>
+                <a href="model.html" class="hey">3D Մոդել</a>
+                <a href="store.html" class="hey">Գնումներ</a>
+            </div>
+
+    <div class="auth-actions">
+        <a href="javascript:void(0)" class="log" id="loginNavBtn" onclick="window.location.href='store.html'">LOGIN</a>
+
+        <div class="user-profile-nav" id="userProfile">
+            <button class="user-btn" onclick="toggleDropdown()">
+                <i class="fa-solid fa-user"></i>
+                <span id="userNameSpan"></span>
+                <i class="fa-solid fa-chevron-down" style="font-size:10px;"></i>
+            </button>
+            <div class="dropdown-menu" id="dropdownMenu">
+                <a href="account.html"><i class="fa-solid fa-user-gear"></i> Account Details</a>
+                <a href="javascript:void(0)" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</a>
+            </div>
+        </div>
+
+        <a href="help.html" class="contactn">SUPPORT</a>
+    </div>
+</nav>
+
+<div id="not-logged" style="display:none;">
+    <div class="not-logged-screen">
+        <i class="fa-solid fa-lock"></i>
+        <h2>Account Access Required</h2>
+        <p>You need to be logged in to view your account details.</p>
+        <a href="store.html">Go to Store & Login</a>
+    </div>
+</div>
+
+<div id="account-page" style="display:none;">
+
+    <div class="account-hero">
+        <div class="account-avatar" id="heroAvatar">
+            <i class="fa-solid fa-user"></i>
+        </div>
+        <div class="account-hero-text">
+            <h1 id="heroName">Account</h1>
+            <p id="heroEmail">Loading...</p>
+        </div>
+    </div>
+
+    <div class="account-layout">
+        <div class="account-sidebar">
+            <div class="sidebar-section-label">Your Account</div>
+            <div class="sidebar-link active" onclick="switchTab('info', this)">
+                <i class="fa-solid fa-circle-user"></i> Your Info
+            </div>
+            <div class="sidebar-link" onclick="switchTab('security', this)">
+                <i class="fa-solid fa-shield-halved"></i> Security
+            </div>
+            <div class="sidebar-link" onclick="switchTab('orders', this)">
+                <i class="fa-solid fa-bag-shopping"></i> Order History
+            </div>
+        </div>
+
+        <div class="account-content">
+
+            <div class="tab-panel active" id="tab-info">
+                <div class="content-card">
+                    <div class="card-header">
+                        <i class="fa-solid fa-circle-user"></i>
+                        <h3>Personal Information</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="field-row">
+                            <div class="field-group">
+                                <label>Full Name</label>
+                                <input type="text" id="infoName" placeholder="Your full name">
+                            </div>
+                            <div class="field-group">
+                                <label>Email Address</label>
+                                <input type="email" id="infoEmail" readonly>
+                            </div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-group">
+                                <label>Date of Birth</label>
+                                <input type="date" id="infoDob">
+                            </div>
+                            <div class="field-group">
+                                <label>Country</label>
+                                <select id="infoCountry">
+                                    <option value="">Select country</option>
+                                    <option>Armenia</option>
+                                    <option>United States</option>
+                                    <option>United Kingdom</option>
+                                    <option>France</option>
+                                    <option>Germany</option>
+                                    <option>Italy</option>
+                                    <option>Spain</option>
+                                    <option>Japan</option>
+                                    <option>China</option>
+                                    <option>Australia</option>
+                                    <option>Canada</option>
+                                    <option>Russia</option>
+                                    <option>Brazil</option>
+                                    <option>India</option>
+                                    <option>Mexico</option>
+                                    <option>Netherlands</option>
+                                    <option>Sweden</option>
+                                    <option>Switzerland</option>
+                                    <option>Poland</option>
+                                    <option>Portugal</option>
+                                    <option>Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="btn-row">
+                            <button class="save-btn" onclick="saveInfo()" id="saveInfoBtn">SAVE CHANGES</button>
+                            <span class="status-msg" id="infoStatus"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-panel" id="tab-security">
+                <div class="content-card">
+                    <div class="card-header">
+                        <i class="fa-solid fa-key"></i>
+                        <h3>Change Password</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="field-row single">
+                            <div class="field-group">
+                                <label>Current Password</label>
+                                <input type="password" id="secCurrentPass" placeholder="Enter your current password">
+                            </div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-group">
+                                <label>New Password</label>
+                                <input type="password" id="secNewPass" placeholder="Min 8 characters">
+                            </div>
+                            <div class="field-group">
+                                <label>Confirm New Password</label>
+                                <input type="password" id="secConfirmPass" placeholder="Repeat new password">
+                            </div>
+                        </div>
+                        <div class="btn-row">
+                            <button class="save-btn" onclick="changePassword()" id="changePassBtn">UPDATE PASSWORD</button>
+                            <span class="status-msg" id="passStatus"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-header">
+                        <i class="fa-solid fa-phone"></i>
+                        <h3>Phone Number</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="field-row single">
+                            <div class="field-group">
+                                <label>Phone Number</label>
+                                <input type="tel" id="secPhone" placeholder="+374 10 000 000">
+                            </div>
+                        </div>
+                        <div class="btn-row">
+                            <button class="save-btn" onclick="savePhone()" id="savePhoneBtn">SAVE PHONE</button>
+                            <span class="status-msg" id="phoneStatus"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-header">
+                        <i class="fa-solid fa-desktop"></i>
+                        <h3>Active Sessions & Devices</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="device-list" id="deviceList">
+                            <div class="empty-state" style="padding:20px;">
+                                <p style="color:#bbb;">No device history found.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-panel" id="tab-orders">
+                <div class="content-card">
+                    <div class="card-header">
+                        <i class="fa-solid fa-bag-shopping"></i>
+                        <h3>Order History</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="order-list" id="orderList">
+                            <div class="empty-state">
+                                <i class="fa-solid fa-bag-shopping"></i>
+                                <p>You haven't placed any orders yet.</p>
+                                <a href="store.html">Browse the Store</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<footer class="mega-footer">
+        <div class="footer-top">
+            <div class="footer-brand">
+                <img src="https://placehold.co/200x70/1a0f0d/ffa406?text=HRealm&font=serif" alt="Logo">
+                <p>Մենք հանդիսանում ենք մարդկության ճարտարապետական ժառանգության պահպանման թվային կենտրոննեից մեկն․</p>
+                <div class="social-icons">
+                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#"><i class="fa-brands fa-facebook"></i></a>
+                    <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
+                    <a href="#"><i class="fa-brands fa-youtube"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-nav">
+                <h4>ՆԱՎԻԳԱՑԻԱ</h4>
+                <a href="home.html">Գլխավոր Էջ</a>
+                <a href="pictures.html">Նկարներ</a>
+                <a href="history.html">Պատմություն</a>
+                <a href="model.html">3D Մոդելներ</a>
+                <a href="store.html">Գնումներ</a>
+            </div>
+            
+            <div class="footer-contact">
+                <h4>ԿԱՊ ՄԵԶ ՀԵՏ</h4>
+                <p><i class="fa-solid fa-envelope"></i> hrealm@gmail.com</p>
+                <p><i class="fa-solid fa-location-dot"></i> Էջմիածին, Հայաստան</p>
+                <p><i class="fa-solid fa-phone"></i> +374 10 000 000</p>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2026 HRealm Museum. Բոլոր իրավունքները պաշտպանված են.</p>
+        </div>
+    </footer>
+
+<div id="acct-toast" class="toast-msg"></div>
+
+<script>
+const API_URL = 'http://localhost:3000/api';
+
+function getUser() {
+    const s = localStorage.getItem('hrealm_user');
+    return s ? JSON.parse(s) : null;
+}
+
+function toggleDropdown() {
+    document.getElementById('dropdownMenu').classList.toggle('show');
+}
+
+function logout() {
+    localStorage.removeItem('hrealm_user');
+    window.location.href = 'home.html';
+}
+
+function showToast(msg) {
+    const t = document.getElementById('acct-toast');
+    t.innerText = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+function switchTab(name, el) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    el.classList.add('active');
+}
+
+function setStatus(id, msg, type) {
+    const el = document.getElementById(id);
+    el.innerText = msg;
+    el.className = 'status-msg ' + type;
+    if (msg) setTimeout(() => { el.innerText = ''; el.className = 'status-msg'; }, 4000);
+}
+
+function populatePage(user) {
+    document.getElementById('heroName').innerText = user.name;
+    document.getElementById('heroEmail').innerText = user.email;
+    document.getElementById('heroAvatar').innerHTML = `<span style="font-size:36px;font-weight:800;font-family:Georgia,serif;color:#fff;">${user.name.charAt(0).toUpperCase()}</span>`;
+
+    document.getElementById('infoName').value = user.name || '';
+    document.getElementById('infoEmail').value = user.email || '';
+    document.getElementById('infoDob').value = user.dob || '';
+    document.getElementById('infoCountry').value = user.country || '';
+    document.getElementById('secPhone').value = user.phone || '';
+
+    const deviceList = document.getElementById('deviceList');
+    if (user.devices && user.devices.length > 0) {
+        deviceList.innerHTML = [...user.devices].reverse().slice(0, 5).map(d => {
+            const icon = d.name && d.name.toLowerCase().includes('chrome') ? 'fa-chrome'
+                : d.name && d.name.toLowerCase().includes('firefox') ? 'fa-firefox'
+                : d.name && d.name.toLowerCase().includes('safari') ? 'fa-safari'
+                : d.name && d.name.toLowerCase().includes('edge') ? 'fa-edge'
+                : 'fa-desktop';
+            const date = d.time ? new Date(d.time).toLocaleString() : 'Unknown time';
+            return `<div class="device-item">
+                <div class="device-icon"><i class="fa-brands ${icon}"></i></div>
+                <div class="device-info">
+                    <span>${d.name || 'Unknown Device'}</span>
+                    <small>${date}</small>
+                </div>
+            </div>`;
+        }).join('');
+    } else {
+        deviceList.innerHTML = '<p style="color:#bbb;font-size:14px;">No device history.</p>';
+    }
+
+    const orderList = document.getElementById('orderList');
+    if (user.orders && user.orders.length > 0) {
+        orderList.innerHTML = [...user.orders].reverse().map(o => {
+            const itemsHtml = (o.items || []).map(name => `<span>${name}</span>`).join('');
+            return `<div class="order-item">
+                <div class="order-header">
+                    <div>
+                        <div class="order-id">${o.id}</div>
+                        <div class="order-date">${o.date}</div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:16px;">
+                        <span class="order-status-badge">DELIVERED</span>
+                        <div class="order-total">${o.total}</div>
+                    </div>
+                </div>
+                <div class="order-items-list">${itemsHtml}</div>
+            </div>`;
+        }).join('');
+    } else {
+        orderList.innerHTML = `<div class="empty-state">
+            <i class="fa-solid fa-bag-shopping"></i>
+            <p>You haven't placed any orders yet.</p>
+            <a href="store.html">Browse the Store</a>
+        </div>`;
+    }
+}
+
+async function saveInfo() {
+    const user = getUser();
+    if (!user) return;
+    const btn = document.getElementById('saveInfoBtn');
+    btn.disabled = true;
+    btn.innerText = 'SAVING...';
+
+    const name = document.getElementById('infoName').value.trim();
+    const dob = document.getElementById('infoDob').value;
+    const country = document.getElementById('infoCountry').value;
+
+    if (!name) {
+        setStatus('infoStatus', 'Name cannot be empty', 'error');
+        btn.disabled = false;
+        btn.innerText = 'SAVE CHANGES';
+        return;
+    }
+
+    try {
+        const res = await fetch(`${API_URL}/update-profile`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: user.id, name, dob, country })
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+            localStorage.setItem('hrealm_user', JSON.stringify(data));
+            document.getElementById('userNameSpan').innerText = data.name;
+            document.getElementById('heroName').innerText = data.name;
+            document.getElementById('heroAvatar').innerHTML = `<span style="font-size:36px;font-weight:800;font-family:Georgia,serif;color:#fff;">${data.name.charAt(0).toUpperCase()}</span>`;
+            setStatus('infoStatus', 'Changes saved successfully', 'success');
+        } else {
+            setStatus('infoStatus', data.error || 'Failed to save', 'error');
+        }
+    } catch {
+        setStatus('infoStatus', 'Server error', 'error');
+    }
+
+    btn.disabled = false;
+    btn.innerText = 'SAVE CHANGES';
+}
+
+async function changePassword() {
+    const user = getUser();
+    if (!user) return;
+
+    const current = document.getElementById('secCurrentPass').value;
+    const newPass = document.getElementById('secNewPass').value;
+    const confirm = document.getElementById('secConfirmPass').value;
+
+    if (!current || !newPass || !confirm) {
+        setStatus('passStatus', 'All fields are required', 'error');
+        return;
+    }
+
+    if (newPass !== confirm) {
+        setStatus('passStatus', 'New passwords do not match', 'error');
+        return;
+    }
+
+    if (newPass.length < 8) {
+        setStatus('passStatus', 'Password must be at least 8 characters', 'error');
+        return;
+    }
+
+    const btn = document.getElementById('changePassBtn');
+    btn.disabled = true;
+    btn.innerText = 'UPDATING...';
+
+    try {
+        const res = await fetch(`${API_URL}/change-password`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: user.email, currentPassword: current, newPassword: newPass })
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+            document.getElementById('secCurrentPass').value = '';
+            document.getElementById('secNewPass').value = '';
+            document.getElementById('secConfirmPass').value = '';
+            setStatus('passStatus', 'Password updated successfully', 'success');
+        } else {
+            setStatus('passStatus', data.error || 'Failed to update password', 'error');
+        }
+    } catch {
+        setStatus('passStatus', 'Server error', 'error');
+    }
+
+    btn.disabled = false;
+    btn.innerText = 'UPDATE PASSWORD';
+}
+
+async function savePhone() {
+    const user = getUser();
+    if (!user) return;
+
+    const phone = document.getElementById('secPhone').value.trim();
+    const btn = document.getElementById('savePhoneBtn');
+    btn.disabled = true;
+    btn.innerText = 'SAVING...';
+
+    try {
+        const res = await fetch(`${API_URL}/update-profile`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: user.id, phone })
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+            localStorage.setItem('hrealm_user', JSON.stringify(data));
+            setStatus('phoneStatus', 'Phone number saved', 'success');
+        } else {
+            setStatus('phoneStatus', data.error || 'Failed to save', 'error');
+        }
+    } catch {
+        setStatus('phoneStatus', 'Server error', 'error');
+    }
+
+    btn.disabled = false;
+    btn.innerText = 'SAVE PHONE';
+}
+
+function checkSession() {
+    const user = getUser();
+    const loginBtn = document.getElementById('loginNavBtn');
+    const userProfile = document.getElementById('userProfile');
+    const userNameSpan = document.getElementById('userNameSpan');
+
+    if (user) {
+        if (loginBtn) loginBtn.style.display = 'none';
+        if (userProfile) {
+            userProfile.style.display = 'flex';
+            if (userNameSpan) userNameSpan.innerText = user.name;
+        }
+        document.getElementById('account-page').style.display = 'block';
+        document.getElementById('not-logged').style.display = 'none';
+        populatePage(user);
+    } else {
+        if (loginBtn) loginBtn.style.display = 'block';
+        if (userProfile) userProfile.style.display = 'none';
+        document.getElementById('account-page').style.display = 'none';
+        document.getElementById('not-logged').style.display = 'block';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    checkSession();
+
+    document.addEventListener('click', e => {
+        const dropdown = document.getElementById('dropdownMenu');
+        const profile = document.getElementById('userProfile');
+        if (dropdown && profile && !profile.contains(e.target)) {
+            dropdown.classList.remove('show');
+        }
+    });
+});
+</script>
+
+<script>
+(function () {
+    window.addEventListener('DOMContentLoaded', () => {
+        const loader = document.getElementById('page-loader');
+        document.body.classList.add('fade-in');
+        document.body.classList.remove('hidden-content');
+        setTimeout(() => {
+            loader.style.opacity = '0';
+            setTimeout(() => loader.style.display = 'none', 300);
+        }, 400);
+    });
+
+    document.querySelectorAll('.hey, .contactn').forEach(link => {
+        link.addEventListener('click', e => {
+            const href = link.getAttribute('href');
+            if (href && href !== 'javascript:void(0)' && !href.startsWith('#')) {
+                e.preventDefault();
+                document.body.style.opacity = '0';
+                setTimeout(() => window.location.href = href, 300);
+            }
+        });
+    });
+})();
+</script>
+
+</body>
+</html>

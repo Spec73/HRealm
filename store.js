@@ -1,0 +1,169 @@
+function showToast(msg) {
+    let toast = document.getElementById('site-toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'site-toast';
+        document.body.appendChild(toast);
+    }
+    toast.innerText = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3500);
+}
+
+const items = [
+    { name: "Cambodia Poster", price: 29.99, img: "https://i.ebayimg.com/images/g/RG8AAeSw371pjibK/s-l1600.webp", desc: "This matte vertical poster brings Cambodia to your wall with warm, vintage map art and lotus blooms, peacocks, and a gentle river landscape." },
+    { name: "Sydney Opera House 3D", price: 45, img: "https://m.media-amazon.com/images/I/61dPFjzkSNL._AC_SX679_.jpg", desc: "Sydney Opera House 3D Engraved Crystal Collectible Souvenir (Large)" },
+    { name: "Himeji Castle Figure", price: 58, img: "https://i.ebayimg.com/images/g/1REAAOSw3NxiJWbY/s-l1600.webp", desc: "Decorate your room with the Shachihoko figure!! A shachihoko is an imaginary creature with a tiger head and a carp body. It is a Japanese traditional figure which is often found at the top of Japanese castle." },
+    { name: "Himeji Castle Art Print", price: 9.99, img: "https://i.ebayimg.com/images/g/YtcAAeSwpI9o4ID0/s-l1600.webp", desc: "Traditional Japanese style ink painting print of Himeji under cherry blossoms." },
+    { name: "Eiffel Tower Bronze Edition", price: 27, img: "https://shop.toureiffel.paris/875-large_default/eiffel-tower-bronze-13-cm-signature-collection.webp", desc: "Authentic bronze-finish metal miniature from the official Eiffel Tower collection." },
+    { name: "Stained Glass Eiffel Decor", price: 7.99, img: "https://m.media-amazon.com/images/I/81praE83wsL._AC_SX679_.jpg", desc: "Hand-painted glass suncatcher that casts beautiful light patterns of the Parisian skyline." },
+    { name: "Preseli Bluestone Standing stone", price: 50, img: "https://i.ebayimg.com/images/g/5yYAAeSwArlpyVjh/s-l1600.webp", desc: "Each piece is unique, with natural patterns and tones that make every pendant one of a kind." },
+    { name: "Julius Caesar Statue", price: 24.99, img: "https://i.ebayimg.com/images/g/cwAAAOSwXbNgLylt/s-l1600.webp", desc: "This bust of Caesar stands 5 inches tall and weighs approximately 85 grams. Printed in marble color PLA plastic." },
+    { name: "Vintage Colosseum Ornament", price: 4.99, img: "https://i.etsystatic.com/23863808/r/il/6c5eab/7257296734/il_1588xN.7257296734_kcri.jpg", desc: "A weathered, vintage-style figurine of Rome's legendary Flavian Amphitheatre." },
+    { name: "Vintage Venice Italy Bridge", price: 48.99, img: "https://i.ebayimg.com/images/g/J4sAAeSwSpxoOOVb/s-l1600.webp", desc: "Vintage Venice Italy Bridge Ponte di Rialto Colored Pencil Framed 11x9" },
+    { name: "Great Wall of China Postcard", price: 18, img: "https://i.ebayimg.com/images/g/-bwAAeSwi69p25cY/s-l1600.webp", desc: "Old postcard-CHINA-Great Wall of China, travelled." },
+    { name: "Big Ben Pocket Watch", price: 29.99, img: "https://www.shop.parliament.uk/cdn/shop/files/32971-Limited-Edition-Big-Ben-Pocket-Watch-2024_2048px_480x480@2x.jpg?v=1742896348", desc: "The pocket watch is beautifully presented in a wooden gift box featuring the official logo of Big Ben and The Elizabeth Tower in the lining." },
+    { name: "Big Ben Pipes", price: 89, img: "https://i.ebayimg.com/images/g/HNAAAeSwSx9p4IHs/s-l1600.webp", desc: "The sitter was found without stem. We have added an original Big-Ben stem which fits perfectly. We do not know what the REG.291418 stamp signifies, we know only that the pipe is quite old. Certainly pre-1970, possibly even from the 1950s." },
+    { name: "Leaning Tower Snow Globe", price: 18, img: "https://i.ebayimg.com/images/g/C68AAeSw6~tpr4jX/s-l1600.jpg", desc: "Classic glass snow globe containing the tilted marble wonder of Pisa." },
+    { name: "Alabaster Pisa Figurine", price: 29, img: "https://i.ebayimg.com/images/g/3AoAAeSw-3lpdPln/s-l1600.jpg", desc: "Carved from genuine Tuscan alabaster stone with intricate column details." },
+    { name: "Silver Sagrada Rosary", price: 99.99, img: "https://api.laie.es/media/erp/2000000/2000000073811_4-391x500-data.JPG", desc: "Sterling silver rosary blessed and designed by the Sagrada Familia Cathedral in Barcelona." },
+    { name: "Leaning Tower of Pisa Tower", price: 24, img: "https://i.ebayimg.com/images/g/ZWsAAeSwJSpp3awJ/s-l1600.webp", desc: "1940s Leaning Tower of Pisa Italy WWII Bell Tower US Soldier Vtg Real Photo" },
+    { name: "Sydney Opera House Wallpaper", price: 40, img: "https://i.ebayimg.com/images/g/x0sAAOSwhLth6-9C/s-l1600.webp", desc: "3D Sydney Opera House Wallpaper Wall Mural Removable Self-adhesive 1832" },
+    { name: "Vintage Alhambra Bracelet", price: 79.99, img: "https://i.ebayimg.com/images/g/JMYAAeSwWz1p26tF/s-l1600.webp", desc: "For sale is a Van Cleef & Arpels vintage Alhambra 5 Motifs bracelet in 18-karat white gold with blue chalcedony, without a receipt. The boxes shown are included." },
+    { name: "Westminster Abbey House", price: 40, img: "https://i.ebayimg.com/images/g/qncAAeSwiJ5p3Cdx/s-l1600.webp", desc: "Excellent condition Westminster Abbey Dept 56 Christmas house. No box will ship carefully! Thank you!" },
+    { name: "Neuschwanstein Castle Vintage", price: 15, img: "https://i.ebayimg.com/images/g/~ckAAeSwY5xp4Uy9/s-l1600.webp", desc: "The Vintage 1993 The Danbury Mint Enchanted Castles of Europe Neuschwanstein Castle is a decorative collectible made of mixed materials including resin. This original piece features a colorful multi-color design in the style of a novelty collectible." },
+    { name: "Rialto Bridge Painting", price: 85, img: "https://i.ebayimg.com/images/g/HXgAAeSwjKFpXqRo/s-l1600.webp", desc: "Signed by the artist, this original painting captures the famous landmarks of Venice, specifically the iconic Rialto Bridge, in a realistic style." },
+    { name: "The Colosseum Painting", price: 60, img: "https://i.ebayimg.com/images/g/4jQAAOSwpoVm7I4E/s-l1600.webp", desc: "The artist's handcrafted watercolor piece is brought to life with a stunning wood carved frame with UV protective glass, measuring 23 inches in height and 19 inches in length." },
+    { name: "De Haar Castle Beer Pitcher", price: 19.99, img: "https://i.ebayimg.com/images/g/8qMAAOSwij1f9jZW/s-l1600.webp", desc: "Vintage Ceramic Enesco Yellow Beer Pitcher & 3 Stein Set De Haar / Rhine Castle" },
+];
+
+let cart = [];
+const grid = document.getElementById('item-grid');
+
+items.forEach((item, index) => {
+    const card = document.createElement('div');
+    card.className = 'item-card';
+    card.innerHTML = `
+        <img src="${item.img}">
+        <h3>${item.name}</h3>
+        <p class="price-tag">$${item.price}</p>
+        <button class="buy-btn" onclick="event.stopPropagation(); add(${index})">Գնել</button>
+    `;
+    card.onclick = () => openDetails(index);
+    grid.appendChild(card);
+});
+
+function openDetails(idx) {
+    const item = items[idx];
+    document.getElementById('det-img').src = item.img;
+    document.getElementById('det-title').innerText = item.name;
+    document.getElementById('det-desc').innerText = item.desc;
+
+    const amd = (item.price * 400).toLocaleString();
+    const eur = (item.price * 0.92).toFixed(2);
+
+    document.getElementById('det-prices').innerHTML = `
+        <p>USD: $${item.price}</p>
+        <p>EUR: €${eur}</p>
+        <p>AMD: ֏${amd}</p>
+    `;
+
+    document.getElementById('det-buy-trigger').onclick = () => { add(idx); closeDetails(); };
+    document.getElementById('details-modal').classList.add('open');
+}
+
+function closeDetails() { document.getElementById('details-modal').classList.remove('open'); }
+
+function add(idx) {
+    const user = getUser();
+    if (!user) {
+        showToast('Please login to add items to your basket');
+        setTimeout(() => openModal(), 400);
+        return;
+    }
+    cart.push(items[idx]);
+    document.getElementById('count').innerText = cart.length;
+    showToast(`${items[idx].name} added to basket`);
+}
+
+function openCart() {
+    const user = getUser();
+    if (!user) {
+        showToast('Please login to view your basket');
+        setTimeout(() => openModal(), 400);
+        return;
+    }
+    const list = document.getElementById('cart-list');
+    list.innerHTML = '';
+    let total = 0;
+    cart.forEach(i => {
+        total += i.price;
+        list.innerHTML += `<div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #eee;"><span>${i.name}</span><strong>$${i.price}</strong></div>`;
+    });
+    document.getElementById('cart-sum').innerHTML = `<h3 style="text-align:right;margin-top:20px;color:#2d1b18;">Total: $${total.toFixed(2)}</h3>`;
+    document.getElementById('cart-modal').classList.add('open');
+}
+
+function closeCart() {
+    document.getElementById('cart-modal').classList.remove('open');
+    document.getElementById('checkout-section').style.display = 'none';
+    document.getElementById('go-check').style.display = 'block';
+}
+
+function startCheck() {
+    if (cart.length === 0) { showToast('Basket is empty'); return; }
+    document.getElementById('go-check').style.display = 'none';
+    document.getElementById('checkout-section').style.display = 'block';
+
+    const cardInput = document.querySelector('#checkout-section .row input:first-child');
+    const cvvInput = document.getElementById('cvv-code');
+
+    cardInput.addEventListener('input', () => {
+        cardInput.value = cardInput.value.replace(/\D/g, '').slice(0, 16);
+    });
+
+    cvvInput.addEventListener('input', () => {
+        cvvInput.value = cvvInput.value.replace(/\D/g, '').slice(0, 3);
+    });
+}
+
+async function finish() {
+    const a = document.getElementById('ship-addr').value;
+    const c = document.getElementById('cvv-code').value;
+    const cardInput = document.querySelector('#checkout-section .row input:first-child');
+
+    if (a && c.length === 3 && cardInput.value.length >= 12) {
+        document.getElementById('fill').style.width = '100%';
+
+        const user = getUser();
+        if (user) {
+            const order = {
+                id: 'ORD-' + Date.now(),
+                date: new Date().toISOString().split('T')[0],
+                total: '$' + cart.reduce((s, i) => s + i.price, 0).toFixed(2),
+                items: cart.map(i => i.name)
+            };
+
+            try {
+                const res = await fetch('http://localhost:3000/api/add-order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: user.id, order })
+                });
+                if (res.ok) {
+                    const updated = await res.json();
+                    localStorage.setItem('hrealm_user', JSON.stringify(updated));
+                }
+            } catch {}
+        }
+
+        setTimeout(() => {
+            closeCart();
+            showToast('Order placed successfully — thank you!');
+            cart = [];
+            document.getElementById('count').innerText = 0;
+        }, 800);
+    } else {
+        showToast('Please fill in address, card number and 3-digit CVV');
+    }
+}

@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HRealm 3D Models</title>
+     <link rel="icon" type="image/png" href="https://img.freepik.com/premium-vector/hr-monogram-logo-vector_724449-1195.jpg">
+    <style>
+        html { background-color: #281612 !important; }
+        body { margin: 0; }
+        #page-loader {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: #281612 !important; z-index: 100000;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: opacity 0.3s ease;
+        }
+        .museum-container { position: relative; width: 160px; height: 160px; display: flex; justify-content: center; align-items: center; }
+        #loader-icon { font-size: 80px; color: #ffa406; z-index: 2; }
+        .shimmer-ring {
+            position: absolute; width: 100%; height: 100%;
+            border: 4px solid rgba(255,164,6,0.1); border-top: 4px solid #ffa406;
+            border-radius: 50%; animation: spin 0.8s linear infinite;
+        }
+        #loader-desc { margin-top: 30px; color: #ffa406; font-family: serif; font-size: 20px; font-style: italic; letter-spacing: 2px; text-align: center; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .hidden-content { opacity: 0; }
+        .fade-in { opacity: 1; transition: opacity 0.4s ease; }
+
+        .user-profile-nav {
+            position: relative;
+            display: none;
+            align-items: center;
+        }
+        .user-btn {
+            background: none;
+            border: 1px solid rgba(255,164,6,0.4);
+            color: #ffa406;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+        }
+        .user-btn:hover {
+            background: rgba(255,164,6,0.1);
+            border-color: #ffa406;
+        }
+        .user-btn i.fa-chevron-down {
+            font-size: 10px;
+            transition: 0.3s;
+        }
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: calc(100% + 12px);
+            right: 0;
+            background: #1a0f0d;
+            border: 1px solid rgba(141,85,36,0.5);
+            border-radius: 4px;
+            min-width: 200px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            z-index: 9999;
+            overflow: hidden;
+        }
+        .dropdown-menu.show { display: block; }
+        .dropdown-menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 20px;
+            color: #eaddca;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: 0.2s;
+            border-bottom: 1px solid rgba(141,85,36,0.2);
+        }
+        .dropdown-menu a:last-child { border-bottom: none; }
+        .dropdown-menu a:hover {
+            background: rgba(255,164,6,0.08);
+            color: #ffa406;
+            padding-left: 26px;
+        }
+        .dropdown-menu a i { width: 16px; text-align: center; color: #8d5524; }
+        .dropdown-menu a:hover i { color: #ffa406; }
+
+        .auth-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 99999;
+            justify-content: center;
+            align-items: center;
+        }
+        .auth-modal-overlay.open { display: flex; }
+        .auth-card {
+            background: #fff;
+            width: 420px;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.5);
+        }
+        .auth-card-top {
+            background: linear-gradient(135deg, #1a0f0d 0%, #2d1b12 100%);
+            padding: 36px 40px 28px;
+            text-align: center;
+            border-bottom: 3px solid #ffa406;
+        }
+        .auth-card-top img {
+            height: 45px;
+            margin-bottom: 16px;
+        }
+        .auth-card-top h2 {
+            color: #ffa406;
+            margin: 0;
+            font-family: Georgia, serif;
+            font-size: 1.4rem;
+            letter-spacing: 2px;
+        }
+        .auth-card-body {
+            padding: 30px 40px 36px;
+        }
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 24px;
+            border-bottom: 2px solid #f0e8d8;
+        }
+        .auth-tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: #999;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: 0.2s;
+        }
+        .auth-tab.active {
+            color: #8d5524;
+            border-bottom-color: #ffa406;
+        }
+        .auth-form {
+            display: none;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .auth-form.visible { display: flex; }
+        .auth-form input {
+            width: 100%;
+            padding: 13px 16px;
+            border: 1.5px solid #e0d5c5;
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box;
+            outline: none;
+            transition: 0.2s;
+            background: #fdfaf5;
+            color: #2d1b18;
+        }
+        .auth-form input:focus {
+            border-color: #ffa406;
+            background: #fff;
+        }
+        .auth-form button[type=submit] {
+            background: #ffa406;
+            color: #fff;
+            border: none;
+            padding: 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            cursor: pointer;
+            margin-top: 4px;
+            transition: 0.2s;
+        }
+        .auth-form button[type=submit]:hover { background: #e69405; }
+        .auth-form button[type=submit]:disabled { opacity: 0.6; cursor: not-allowed; }
+        #errorMsg {
+            color: #c0392b;
+            font-size: 13px;
+            text-align: center;
+            min-height: 18px;
+            font-weight: 600;
+        }
+        .auth-close {
+            position: absolute;
+            top: 14px;
+            right: 18px;
+            font-size: 26px;
+            color: #eaddca;
+            cursor: pointer;
+            line-height: 1;
+            transition: 0.2s;
+        }
+        .auth-close:hover { color: #ffa406; }
+        .hint-text {
+            font-size: 11px;
+            color: #aaa;
+            text-align: center;
+        }
+        .hint-text span {
+            color: #8d5524;
+            cursor: pointer;
+            font-weight: 700;
+        }
+        .hint-text span:hover { color: #ffa406; }
+    </style>
+    <link rel="stylesheet" href="./model.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="hidden-content">
+    <div id="page-loader">
+        <div class="museum-container">
+            <div class="shimmer-ring"></div>
+            <div id="loader-icon"></div>
+        </div>
+        <div id="loader-desc"></div>
+    </div>
+
+    <nav class="nav-container">
+        <a href="model.html" class="nav-brand">
+            <img src="https://placehold.co/200x70/1a0f0d/ffa406?text=HRealm&font=serif" alt="HRealm Logo">
+        </a>
+        
+        <div class="nav-links">
+            <a href="home.html" class="hey">Գլխավոր</a>
+            <a href="history.html" class="hey">Պատմություն</a>
+            <a href="pictures.html" class="hey">Նկարներ</a>
+            <a href="model.html" class="hey">3D Մոդել</a>
+            <a href="store.html" class="hey">Գնումներ</a>
+        </div>
+        
+
+<div class="nav-utilities">
+            <div class="search-wrapper">
+                <form class="search-box" onsubmit="return false;">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Search the archives..." class="nav-search">
+                </form>
+                <div id="search-results"></div>
+            </div>
+
+        <div class="auth-actions">
+            <a href="javascript:void(0)" class="log" id="loginNavBtn" onclick="openModal()">Մուտք</a>
+
+ <div class="user-profile-nav" id="userProfile">
+                <button class="user-btn" onclick="toggleDropdown()">
+                    <i class="fa-solid fa-user"></i>
+                    <span id="userNameSpan"></span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <a href="account.html"><i class="fa-solid fa-user-gear"></i> Հաշվի տվյալներ</a>
+                    <a href="javascript:void(0)" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Դուրս գալ</a>
+                </div>
+            </div>
+            <a href="help.html" class="contactn">SUPPORT</a>
+        </div>
+    </nav>
+
+    <header id="welcome-header" class="minimal-intro" style="background-image: linear-gradient(rgba(45, 27, 24, 0.7), rgba(45, 27, 24, 0.7)), url('https://media.sketchfab.com/models/55a301280bbe4f9ea63f79c22da7c72d/thumbnails/6414290c05f04aabad08217a7b5b5e89/27c33eb0a6eb4803b123c2f4080b4a3a.jpeg');">
+        <div class="intro-wrap">
+            <h1>3D դիտում</h1>
+            <p>Բացահայտիր պատմական վայրերի 3D մոդելները։</p>
+            <div class="gold-line"></div>
+        </div>
+    </header>
+
+    <main class="gallery-container">
+        <div class="gallery-grid" id="landmark-gallery"></div>
+    </main>
+
+    <div id="modelModal" class="modal">
+        <div class="modal-nav">
+            <h2 id="m-title">Building Name</h2>
+            <span class="close-modal" onclick="closeModel()">&times;</span>
+        </div>
+        <div class="iframe-container">
+            <iframe id="m-frame" src="" frameborder="0" allowfullscreen></iframe>
+        </div>
+    </div>
+<div class="pagination-wrap">
+    <div class="nav-btn-group">
+        <a href="pictures.html" class="page-btn"><i class="fa-solid fa-chevron-left"></i> Նախորդ</a>
+        <a href="store.html" class="page-btn">Հաջորդ <i class="fa-solid fa-chevron-right"></i></a>
+    </div>
+</div>
+
+<div id="authModal" class="auth-modal-overlay">
+        <div class="auth-card">
+            <span class="auth-close" onclick="closeModal()">&times;</span>
+            <div class="auth-card-top">
+                <h2 id="modalTitle">Login</h2>
+            </div>
+            <div class="auth-card-body">
+                <div class="auth-tabs">
+                    <div class="auth-tab active" id="tabLogin" onclick="showLogin(); document.getElementById('tabLogin').classList.add('active'); document.getElementById('tabSignup').classList.remove('active');">LOGIN</div>
+                    <div class="auth-tab" id="tabSignup" onclick="showSignup(); document.getElementById('tabSignup').classList.add('active'); document.getElementById('tabLogin').classList.remove('active');">SIGN UP</div>
+                </div>
+
+                <form id="loginForm" class="auth-form visible">
+                    <input type="email" id="logEmail" placeholder="Email address" required>
+                    <input type="password" id="logPass" placeholder="Password" required>
+                    <button type="submit">Մուտք</button>
+                    <p class="hint-text">Չունեք Հաշիվ? <span onclick="showSignup(); document.getElementById('tabSignup').classList.add('active'); document.getElementById('tabLogin').classList.remove('active');">Create one</span></p>
+                </form>
+
+                <form id="signupForm" class="auth-form">
+                    <input type="text" id="sigName" placeholder="Full name" required>
+                    <input type="email" id="sigEmail" placeholder="Email address" required>
+                    <input type="password" id="sigPass" placeholder="Password (min 8 characters)" required minlength="8">
+                    <input type="password" id="sigConfirm" placeholder="Confirm password" required>
+                    <button type="submit">Ստեղծել հաշիվ</button>
+                    <p class="hint-text">Ունեք հաշիվ?<span onclick="showLogin(); document.getElementById('tabLogin').classList.add('active'); document.getElementById('tabSignup').classList.remove('active');">Sign in</span></p>
+                </form>
+
+                <p id="errorMsg"></p>
+            </div>
+        </div>
+    </div>
+    
+
+    <footer class="mega-footer">
+        <div class="footer-top">
+            <div class="footer-brand">
+                <img src="https://placehold.co/200x70/1a0f0d/ffa406?text=HRealm&font=serif" alt="Logo">
+                <p>Մենք հանդիսանում ենք մարդկության ճարտարապետական ժառանգության պահպանման թվային կենտրոննեից մեկն․</p>
+                <div class="social-icons">
+                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#"><i class="fa-brands fa-facebook"></i></a>
+                    <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
+                    <a href="#"><i class="fa-brands fa-youtube"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-nav">
+                <h4>ՆԱՎԻԳԱՑԻԱ</h4>
+                <a href="home.html">Գլխավոր Էջ</a>
+                <a href="pictures.html">Նկարներ</a>
+                <a href="history.html">Պատմություն</a>
+                <a href="model.html">3D Մոդելներ</a>
+                <a href="store.html">Գնումներ</a>
+            </div>
+            
+            <div class="footer-contact">
+                <h4>ԿԱՊ ՄԵԶ ՀԵՏ</h4>
+                <p><i class="fa-solid fa-envelope"></i> hrealm@gmail.com</p>
+                <p><i class="fa-solid fa-location-dot"></i> Էջմիածին, Հայաստան</p>
+                <p><i class="fa-solid fa-phone"></i> +374 10 000 000</p>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2026 HRealm Museum. Բոլոր իրավունքները պաշտպանված են.</p>
+        </div>
+    </footer>
+
+    <script src="./modul.js"></script>
+    <script src="./auth.js"></script>
+    <script>
+        (function() {
+            const iconBox = document.getElementById('loader-icon');
+            const descBox = document.getElementById('loader-desc');
+            const path = window.location.pathname;
+            const setContent = () => {
+                if (path.includes("history.html")) {
+                    iconBox.innerHTML = '<i class="fa-solid fa-scroll"></i>';
+                    descBox.innerText = "Փաստերի բացահայտում";
+                } else if (path.includes("pictures.html")) {
+                    iconBox.innerHTML = '<i class="fa-solid fa-camera-retro"></i>';
+                    descBox.innerText = "Պատմական վայրերի լուսանկարներ";
+                } else if (path.includes("model.html")) {
+                    iconBox.innerHTML = '<i class="fa-solid fa-cube"></i>';
+                    descBox.innerText = "3D մոդելների դիտում";
+                } else if (path.includes("store.html")) {
+                    iconBox.innerHTML = '<i class="fa-solid fa-coins"></i>';
+                    descBox.innerText = "Պատմական հավաքածուներ";
+                } else {
+                    iconBox.innerHTML = '<i class="fa-solid fa-landmark"></i>';
+                    descBox.innerText = "Մուտք HRealm թանգարան";
+                }
+            };
+            setContent();
+            window.addEventListener('DOMContentLoaded', () => {
+                const loader = document.getElementById('page-loader');
+                document.body.classList.add('fade-in');
+                document.body.classList.remove('hidden-content');
+                setTimeout(() => {
+                    loader.style.opacity = '0';
+                    setTimeout(() => loader.style.display = 'none', 300);
+                }, 400);
+            });
+            document.querySelectorAll('.hey, .log, .contactn').forEach(link => {
+                link.addEventListener('click', e => {
+                    const href = link.getAttribute('href');
+                    if (href && href !== 'javascript:void(0)' && !href.startsWith('#')) {
+                        e.preventDefault();
+                        document.body.style.opacity = '0';
+                        setTimeout(() => window.location.href = href, 300);
+                    }
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
