@@ -386,6 +386,9 @@
         } else if (path.includes("store.html")) {
             iconBox.innerHTML = '<i class="fa-solid fa-coins"></i>';
             descBox.innerText = "Պատմական հավաքածուներ";
+        } else if (path.includes("help.html")) {
+            iconBox.innerHTML = '<i class="fa-solid fa-circle-question"></i>';
+            descBox.innerText = "Հիմնական հարցեր";
         } else {
             iconBox.innerHTML = '<i class="fa-solid fa-landmark"></i>';
             descBox.innerText = "Մուտք HRealm թանգարան";
@@ -394,15 +397,15 @@
 
     setContent();
 
-    window.addEventListener('DOMContentLoaded', () => {
+    window.addEventListener('load', () => {
         const loader = document.getElementById('page-loader');
         document.body.classList.add('fade-in');
         document.body.classList.remove('hidden-content');
-        
+
         setTimeout(() => {
             loader.style.opacity = '0';
             setTimeout(() => loader.style.display = 'none', 300);
-        }, 400);
+        }, 1500);
     });
 
     document.querySelectorAll('.hey, .log, .contactn').forEach(link => {
@@ -416,7 +419,6 @@
         });
     });
 })();
-
 
 document.querySelectorAll('.page-btn').forEach(button => {
     button.addEventListener('click', function(e) {
