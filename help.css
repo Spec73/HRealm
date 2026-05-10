@@ -83,7 +83,7 @@ body {
 }
 
 .search-box:focus-within {
-    width: 320px;
+    width: 300px;
     background: #281612;
     border-color: #ffa406;
     box-shadow: 0 0 15px rgba(255, 164, 6, 0.2);
