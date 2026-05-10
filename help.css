@@ -38,6 +38,7 @@ body {
     letter-spacing: 1.5px;
     transition: all 0.3s ease;
     position: relative;
+    white-space: nowrap;
 }
 
 .hey::after {
