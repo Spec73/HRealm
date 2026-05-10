@@ -397,33 +397,66 @@
     <script src="./search.js"></script>
     <script src="./auth.js"></script>
     <script>
-        (function () {
-            const iconBox = document.getElementById('loader-icon');
-            const descBox = document.getElementById('loader-desc');
+        (function() {
+    const iconBox = document.getElementById('loader-icon');
+    const descBox = document.getElementById('loader-desc');
+    const path = window.location.pathname;
+
+    const setContent = () => {
+        if (path.includes("history.html")) {
+            iconBox.innerHTML = '<i class="fa-solid fa-scroll"></i>';
+            descBox.innerText = "Փաստերի բացահայտում";
+        } else if (path.includes("pictures.html")) {
+            iconBox.innerHTML = '<i class="fa-solid fa-camera-retro"></i>';
+            descBox.innerText = "Պատմական վայրերի լուսանկարներ";
+        } else if (path.includes("model.html")) {
+            iconBox.innerHTML = '<i class="fa-solid fa-cube"></i>';
+            descBox.innerText = "3D մոդելների դիտում";
+        } else if (path.includes("store.html")) {
             iconBox.innerHTML = '<i class="fa-solid fa-coins"></i>';
             descBox.innerText = "Պատմական հավաքածուներ";
+        } else if (path.includes("help.html")) {
+            iconBox.innerHTML = '<i class="fa-solid fa-circle-question"></i>';
+            descBox.innerText = "Հիմնական հարցեր";
+        } else {
+            iconBox.innerHTML = '<i class="fa-solid fa-landmark"></i>';
+            descBox.innerText = "Մուտք HRealm թանգարան";
+        }
+    };
 
-            window.addEventListener('DOMContentLoaded', () => {
-                const loader = document.getElementById('page-loader');
-                document.body.classList.add('fade-in');
-                document.body.classList.remove('hidden-content');
-                setTimeout(() => {
-                    loader.style.opacity = '0';
-                    setTimeout(() => loader.style.display = 'none', 300);
-                }, 400);
-            });
+    setContent();
 
-            document.querySelectorAll('.hey, .contactn').forEach(link => {
-                link.addEventListener('click', e => {
-                    const href = link.getAttribute('href');
-                    if (href && href !== 'javascript:void(0)' && !href.startsWith('#')) {
-                        e.preventDefault();
-                        document.body.style.opacity = '0';
-                        setTimeout(() => window.location.href = href, 300);
-                    }
-                });
-            });
-        })();
+    window.addEventListener('load', () => {
+        const loader = document.getElementById('page-loader');
+        document.body.classList.add('fade-in');
+        document.body.classList.remove('hidden-content');
+
+        setTimeout(() => {
+            loader.style.opacity = '0';
+            setTimeout(() => loader.style.display = 'none', 300);
+        }, 1500);
+    });
+
+    document.querySelectorAll('.hey, .log, .contactn').forEach(link => {
+        link.addEventListener('click', e => {
+            const href = link.getAttribute('href');
+            if (href && href !== 'javascript:void(0)' && !href.startsWith('#')) {
+                e.preventDefault();
+                document.body.style.opacity = '0';
+                setTimeout(() => window.location.href = href, 300);
+            }
+        });
+    });
+})();
+
+document.querySelectorAll('.page-btn').forEach(button => {
+    button.addEventListener('click', function(e) {
+        const target = this.getAttribute('href');
+        if (target) {
+            console.log('Navigating to: ' + target);
+        }
+    });
+});
     </script>
 </body>
 </html>
