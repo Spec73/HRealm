@@ -27,6 +27,7 @@
         .fade-in { opacity: 1; transition: opacity 0.4s ease; }
     </style>
     <link rel="stylesheet" href="./account.css">
+    <link rel="stylesheet" href="./responsive.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body class="hidden-content">
@@ -290,7 +291,7 @@
 <div id="acct-toast" class="toast-msg"></div>
 
 <script>
-const API_URL = 'http://localhost:3000/api';
+const API_URL = 'https://hrealm.onrender.com/api';
 
 function getUser() {
     const s = localStorage.getItem('hrealm_user');
@@ -571,6 +572,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 })();
 </script>
-
+<script src="./hamburger.js"></script>
 </body>
 </html>
