@@ -291,7 +291,7 @@
 <div id="acct-toast" class="toast-msg"></div>
 
 <script>
-const API_URL = 'https://hrealm.onrender.com/api';
+const API_URL = 'http://localhost:3000/api';
 
 function getUser() {
     const s = localStorage.getItem('hrealm_user');
@@ -319,6 +319,10 @@ function switchTab(name, el) {
     document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
     document.getElementById('tab-' + name).classList.add('active');
     el.classList.add('active');
+    if (name === 'orders') {
+        const user = getUser();
+        if (user) renderOrders(user);
+    }
 }
 
 function setStatus(id, msg, type) {
@@ -326,6 +330,34 @@ function setStatus(id, msg, type) {
     el.innerText = msg;
     el.className = 'status-msg ' + type;
     if (msg) setTimeout(() => { el.innerText = ''; el.className = 'status-msg'; }, 4000);
+}
+
+function renderOrders(user) {
+    const orderList = document.getElementById('orderList');
+    if (user.orders && user.orders.length > 0) {
+        orderList.innerHTML = [...user.orders].reverse().map(o => {
+            const itemsHtml = (o.items || []).map(name => `<span>${name}</span>`).join('');
+            return `<div class="order-item">
+                <div class="order-header">
+                    <div>
+                        <div class="order-id">${o.id}</div>
+                        <div class="order-date">${o.date}</div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:16px;">
+                        <span class="order-status-badge">DELIVERED</span>
+                        <div class="order-total">${o.total}</div>
+                    </div>
+                </div>
+                <div class="order-items-list">${itemsHtml}</div>
+            </div>`;
+        }).join('');
+    } else {
+        orderList.innerHTML = `<div class="empty-state">
+            <i class="fa-solid fa-bag-shopping"></i>
+            <p>You haven't placed any orders yet.</p>
+            <a href="store.html">Browse the Store</a>
+        </div>`;
+    }
 }
 
 function populatePage(user) {
@@ -360,31 +392,7 @@ function populatePage(user) {
         deviceList.innerHTML = '<p style="color:#bbb;font-size:14px;">No device history.</p>';
     }
 
-    const orderList = document.getElementById('orderList');
-    if (user.orders && user.orders.length > 0) {
-        orderList.innerHTML = [...user.orders].reverse().map(o => {
-            const itemsHtml = (o.items || []).map(name => `<span>${name}</span>`).join('');
-            return `<div class="order-item">
-                <div class="order-header">
-                    <div>
-                        <div class="order-id">${o.id}</div>
-                        <div class="order-date">${o.date}</div>
-                    </div>
-                    <div style="display:flex;align-items:center;gap:16px;">
-                        <span class="order-status-badge">DELIVERED</span>
-                        <div class="order-total">${o.total}</div>
-                    </div>
-                </div>
-                <div class="order-items-list">${itemsHtml}</div>
-            </div>`;
-        }).join('');
-    } else {
-        orderList.innerHTML = `<div class="empty-state">
-            <i class="fa-solid fa-bag-shopping"></i>
-            <p>You haven't placed any orders yet.</p>
-            <a href="store.html">Browse the Store</a>
-        </div>`;
-    }
+    renderOrders(user);
 }
 
 async function saveInfo() {
@@ -547,7 +555,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 </script>
-
+<script src="./hamburger.js"></script>
 <script>
 (function () {
     window.addEventListener('DOMContentLoaded', () => {
@@ -572,6 +580,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 })();
 </script>
-<script src="./hamburger.js"></script>
+
 </body>
 </html>
