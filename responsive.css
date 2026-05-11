@@ -223,7 +223,7 @@
     .img-box:nth-child(1) { grid-column: span 2; grid-row: span 1; }
     .img-box { height: 180px; }
 
-    .modal { align-items: flex-start; padding-top: 20px; }
+    .modal { align-items: flex-start; padding-top: 20px; overflow: hidden; }
     .modal-body { width: 94vw; padding: 20px; border-radius: 10px; }
     .details-card { width: 94vw !important; max-height: 92vh; overflow-y: auto; }
     .details-content { flex-direction: column; gap: 16px; }
