@@ -28,15 +28,19 @@ const landmarks = [
     { name: "Trevi Fountain", loc: "Rome, Italy", wiki: "Trevi_Fountain", img: "https://images.unsplash.com/photo-1596627116790-af6f46dddbda?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dHJldmklMjBmb3VudGFpbnxlbnwwfHwwfHx8MA%3D%3D" }
 ];
 
+function createCleanId(name) {
+    return name.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+}
+
 function initGrid() {
     const grid = document.getElementById('main-grid');
-    grid.innerHTML = ""; 
+    if (!grid) return;
+    grid.innerHTML = "";
     landmarks.forEach(item => {
         const card = document.createElement('div');
         card.className = 'museum-card';
         card.innerHTML = `
-            <img src="${item.img}" alt="${item.name}" 
-                 style="width:100%; height:250px; object-fit:cover; image-rendering: auto; display:block;">
+            <img src="${item.img}" alt="${item.name}" style="width:100%; height:250px; object-fit:cover; image-rendering: auto; display:block;">
             <div class="card-info">
                 <h3>${item.name}</h3>
                 <p>${item.loc}</p>
@@ -67,18 +71,23 @@ async function showHistory(wikiTag, name, loc) {
         let rawContent = pages[pageId].extract;
 
         if (rawContent) {
-            let cleanText = rawContent.replace(/==+.*?==+/g, ''); 
+            let cleanText = rawContent.replace(/==+.*?==+/g, '');
             let paragraphs = cleanText.split('\n').filter(p => p.trim().length > 50).slice(0, 12);
-            
-            document.getElementById('h-text').innerHTML = paragraphs.map(p => `<p style="margin-bottom:20px; line-height:1.6;">${p}</p>`).join('');
+            const fullText = paragraphs.join('|||');
+            const translateUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=hy&dt=t&q=${encodeURIComponent(fullText)}`;
+            const tResponse = await fetch(translateUrl);
+            const tData = await tResponse.json();
+            let translatedFullText = tData[0].map(item => item[0]).join('');
+            let translatedParagraphs = translatedFullText.split('|||');
+            document.getElementById('h-text').innerHTML = translatedParagraphs.map(p => `<p style="margin-bottom:20px; line-height:1.6;">${p}</p>`).join('');
         } else {
-            document.getElementById('h-text').innerHTML = "<p>Archived data not found.</p>";
+            document.getElementById('h-text').innerHTML = "<p>Տվյալները չեն գտնվել:</p>";
         }
     } catch (e) {
         document.getElementById('h-text').innerHTML = "<p>Error loading records.</p>";
     } finally {
         document.getElementById('h-loading').style.display = 'none';
-        window.scrollTo(0,0);
+        window.scrollTo(0, 0);
     }
 }
 
@@ -88,17 +97,68 @@ function goBack() {
     document.getElementById('welcome-header').style.display = 'flex';
 }
 
+function initSearch() {
+    const searchInput = document.querySelector('.nav-search');
+    const resultsDiv = document.getElementById('search-results');
+    if (!searchInput || !resultsDiv) return;
+
+    searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        resultsDiv.innerHTML = "";
+
+        if (!query) {
+            resultsDiv.style.display = 'none';
+            return;
+        }
+
+        const filtered = landmarks.filter(l =>
+            l.name.toLowerCase().includes(query) || l.loc.toLowerCase().includes(query)
+        );
+
+        if (filtered.length > 0) {
+            resultsDiv.style.display = 'block';
+            filtered.forEach(l => {
+                const id = createCleanId(l.name);
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'result-item';
+                itemDiv.innerHTML = `
+                    <img src="${l.img}" class="res-img">
+                    <div class="res-info">
+                        <span>${l.name}</span>
+                        <div class="result-btns">
+                            <a href="history.html#${id}" class="res-btn">History</a>
+                            <a href="pictures.html#${id}" class="res-btn">Gallery</a>
+                            <a href="model.html#${id}" class="res-btn">3D Model</a>
+                        </div>
+                    </div>
+                `;
+                resultsDiv.appendChild(itemDiv);
+            });
+        } else {
+            resultsDiv.style.display = 'none';
+        }
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!searchInput.contains(e.target) && !resultsDiv.contains(e.target)) {
+            resultsDiv.style.display = 'none';
+        }
+    });
+}
+
 initGrid();
+initSearch();
 
 function syncHistory() {
     if (window.location.hash) {
         const hashId = window.location.hash.substring(1).toLowerCase();
         const item = landmarks.find(l => {
-            const masterId = l.name.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+            const masterId = createCleanId(l.name);
             return masterId === hashId || masterId.includes(hashId) || hashId.includes(masterId);
         });
         if (item) showHistory(item.wiki, item.name, item.loc);
     }
 }
+
 window.addEventListener('load', syncHistory);
 window.addEventListener('hashchange', syncHistory);
