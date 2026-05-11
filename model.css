@@ -396,7 +396,9 @@ body {
     inset: 0;
     background: #000;
     flex-direction: column;
-    z-index: 99999
+    z-index: 999999;
+    overflow: hidden;
+    isolation: isolate;
 }
 
 .modal-nav {
