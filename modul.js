@@ -34,15 +34,22 @@ function createCleanId(name) {
 
 function openModel(name, url) {
     document.getElementById('m-title').innerText = name;
-    document.getElementById('m-frame').src = url;
+    const frame = document.getElementById('m-frame');
+    frame.style.opacity = '0';
+    frame.src = url;
     document.getElementById('modelModal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    frame.onload = () => {
+        frame.style.transition = 'opacity 0.4s ease';
+        frame.style.opacity = '1';
+    };
 }
 
 function closeModel() {
     document.getElementById('modelModal').style.display = 'none';
     document.getElementById('m-frame').src = '';
+    document.body.style.overflow = '';
 }
-
 function renderGallery() {
     const gallery = document.getElementById('landmark-gallery');
     if (!gallery) return;
