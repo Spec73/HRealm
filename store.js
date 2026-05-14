@@ -77,19 +77,19 @@ function closeDetails() { document.getElementById('details-modal').classList.rem
 function add(idx) {
     const user = getUser();
     if (!user) {
-        showToast('Please login to add items to your basket');
+        showToast('Խնդրում ենք մուտք գործել՝ ձեր զամբյուղին ապրանքներ ավելացնելու համար');
         setTimeout(() => openModal(), 400);
         return;
     }
     cart.push(items[idx]);
     document.getElementById('count').innerText = cart.length;
-    showToast(`${items[idx].name} added to basket`);
+    showToast(`${items[idx].name} ավելացվել է զամբյուղի մեջ`);
 }
 
 function openCart() {
     const user = getUser();
     if (!user) {
-        showToast('Please login to view your basket');
+        showToast('Խնդրում ենք մուտք գործել՝ ձեր զամբյուղը դիտելու համար');
         setTimeout(() => openModal(), 400);
         return;
     }
@@ -167,11 +167,11 @@ async function finish() {
 
         setTimeout(() => {
             closeCart();
-            showToast('Order placed successfully — thank you!');
+            showToast('Պատվերը հաջողությամբ կատարված է։ Շնորհակալություն');
             cart = [];
             document.getElementById('count').innerText = 0;
         }, 800);
     } else {
-        showToast('Please fill in address, card number and 3-digit CVV');
+        showToast('Խնդրում ենք լրացնել հասցեն, քարտի համարը և 3 նիշանոց CVV կոդը։');
     }
 }
