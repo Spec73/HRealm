@@ -282,7 +282,9 @@
         }
         .hint-text span:hover { color: #ffa406; }
 
+        .nav-links { flex-shrink: 0; }
 .hey { white-space: nowrap; }
+.auth-actions { flex-shrink: 0; }
     </style>
     <link rel="stylesheet" href="home.css">
     <link rel="stylesheet" href="./responsive.css">
@@ -339,7 +341,7 @@
 
     <section class="faq-section">
         <div class="center-header">
-            <span class="bronze-tag">Support</span>
+            <span class="bronze-tag">Աջակցություն</span>
             <h2 class="dark-title">Հիմնական հարցերն</h2>
             <div class="bronze-divider"></div>
         </div>
@@ -386,7 +388,7 @@
         <div id="contact-content">
             <h2>Կա դեռ խնդիր?</h2>
             <form id="inquiry-form">
-                <input type="email" placeholder="էլեկտրոնային փոստն պարտադիր է !">
+                <input type="email" placeholder="էլեկտրոնային փոստն պարտադիր է !" required>
                 <textarea placeholder="Գրեք ձեր հատուկ հարցն կամ խնդիրը..." rows="5" required></textarea>
                 <button type="submit" class="send-btn">Ուղարկել հարցը</button>
             </form>
@@ -471,8 +473,9 @@
 <script src="./search.js"></script>
 <script src="./auth.js"></script>
 <script src="./hamburger.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script>
-        (function() {
+       (function() {
     const iconBox = document.getElementById('loader-icon');
     const descBox = document.getElementById('loader-desc');
     const path = window.location.pathname;
@@ -509,7 +512,7 @@
         setTimeout(() => {
             loader.style.opacity = '0';
             setTimeout(() => loader.style.display = 'none', 300);
-        }, 300);
+        }, 400);
     });
 
     document.querySelectorAll('.hey, .log, .contactn').forEach(link => {
@@ -540,10 +543,42 @@ document.querySelectorAll('.page-btn').forEach(button => {
             });
         });
 
+        emailjs.init('043USjuihR6aYtmwM');
+
         document.getElementById('inquiry-form').addEventListener('submit', function(e) {
             e.preventDefault();
-            document.getElementById('contact-content').style.display = 'none';
-            document.getElementById('success-message').style.display = 'block';
+            e.stopPropagation();
+
+            const emailInput   = this.querySelector('input[type="email"]');
+            const messageInput = this.querySelector('textarea');
+
+            if (!emailInput.value || !messageInput.value) {
+                alert('Խնդրում ենք լրացնել բոլոր դաշտերը։');
+                return;
+            }
+
+            const btn = this.querySelector('.send-btn');
+            btn.textContent = 'Ուղարկվում է...';
+            btn.disabled = true;
+
+            emailjs.send(
+                'service_a5nlmtg',
+                'template_46yxpge',
+                {
+                    from_email: emailInput.value,
+                    message:    messageInput.value
+                }
+            )
+            .then(function() {
+                document.getElementById('contact-content').style.display = 'none';
+                document.getElementById('success-message').style.display = 'block';
+            })
+            .catch(function(error) {
+                console.error('EmailJS error:', error);
+                alert('Ուղարկումը ձախողվեց։ Կրկին փորձեք կամ կապ հաստատեք մեզ հետ։');
+                btn.textContent = 'Ուղարկել հարցը';
+                btn.disabled = false;
+            });
         });
     </script>
     
