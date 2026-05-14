@@ -316,9 +316,9 @@
                     <input type="text" placeholder="Card Number">
                     <input type="text" id="cvv-code" placeholder="CVV" maxlength="3">
                 </div>
-                <button class="buy-btn full" onclick="finish()">CONFIRM ORDER</button>
+                <button class="buy-btn full" onclick="finish()">ՀԱՍՏԱՏԵԼ ՎՃԱՐՈՒՄՆ</button>
             </div>
-            <button class="buy-btn full" id="go-check" onclick="startCheck()">PROCEED TO CHECKOUT</button>
+            <button class="buy-btn full" id="go-check" onclick="startCheck()">ՎՃԱՐԵԼ</button>
         </div>
     </div>
 
@@ -436,7 +436,7 @@
         setTimeout(() => {
             loader.style.opacity = '0';
             setTimeout(() => loader.style.display = 'none', 300);
-        }, 300);
+        }, 400);
     });
 
     document.querySelectorAll('.hey, .log, .contactn').forEach(link => {
